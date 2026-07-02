@@ -1,0 +1,17 @@
+project:
+  type: website
+
+title: "RadExIORSBoost ML tutorial"
+
+# Move the sidebar inside a website wrapper
+website:
+  sidebar:
+    title: "Tutorials"
+    style: "docked"
+    background: light
+    contents:
+      - boost_ml.qmd
+
+# Change html to live-html to match your document's target format
+format:
+  live-html: default

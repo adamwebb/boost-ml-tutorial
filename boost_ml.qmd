@@ -1,0 +1,43 @@
+---
+title: Introduction
+engine: knitr
+format: live-html
+toc: false
+webr:
+  packages:
+    - dplyr
+    - tidyverse
+    - ggplot2
+    - gtsummary
+    - mlbench
+  repos:
+    - https://r-lib.r-universe.dev
+---
+
+ <!-- comment this out if you need to run quarto add r-wasm/quarto-live on th eterminal again -->
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+
+# First exercise {.sidebar}
+
+Here is the first exercise 
+
+ with a little callout block
+
+```{webr}
+for (x in 1:5) {
+  print(x ** 2)
+}
+```
+
+# Second exercise {.sidebar}
+
+## sub section {.sidebar}
+
+Is right here!
+
+Let's load the `BreastCancer` dataset
+
+```{webr}
+data(BreastCancer, package = 'mlbench')
+glimpse(BreastCancer)
+```
