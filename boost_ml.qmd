@@ -2,7 +2,7 @@
 title: Introduction
 engine: knitr
 format: live-html
-toc: false
+toc: true
 webr:
   packages:
     - dplyr
@@ -10,34 +10,134 @@ webr:
     - ggplot2
     - gtsummary
     - mlbench
+    - broom.helpers
+    - performance
+    - sjPlot
   repos:
     - https://r-lib.r-universe.dev
 ---
 
- <!-- comment this out if you need to run quarto add r-wasm/quarto-live on th eterminal again -->
+<!-- comment this next line out if you need to run quarto add r-wasm/quarto-live on the terminal again -->
+
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
-# First exercise {.sidebar}
+In this first section we will use the sample Wisconsin Breast Cancer dataset `BreastCancer`. This contains a number of histological variables, plus a response varable: is the cell benign or malignant? Using this dataset we will learn how to:
 
-Here is the first exercise 
+- Load a sample dataset
 
- with a little callout block
+- Examine the contents of the dataset
 
-```{webr}
-for (x in 1:5) {
-  print(x ** 2)
-}
-```
+- Carry out a format conversion
 
-# Second exercise {.sidebar}
+- Carry out a univariate analysis
 
-## sub section {.sidebar}
+- Run a logistic regression
 
-Is right here!
+- Build a table with the logistic regression
 
-Let's load the `BreastCancer` dataset
+- Plot the effect sizes of each predictor
+
+- Get a rough estimate of how accurate our logistic regression model is
+
+You will need to run each code block in order or you'll get some errors! You are welcome to chnage the code and experiment - everything here runs in your web browser. Some chunks may take some time to run.
+
+## Our dataset
+
+For this tutorial we'll be using the `BreastCancer` dataset from the `mlbench` package. Let's load the `BreastCancer` dataset and take a quick look:
 
 ```{webr}
 data(BreastCancer, package = 'mlbench')
 glimpse(BreastCancer)
+```
+
+It looks like we have:
+
+- One ID column `Id`
+
+- 9 predictors `Cl.thickness`, `Cell.size`, `Cell.shape`, `Marg.adhesion`, `Epith.c.size`, `Bare.nuclei`, `Bl.cromatin` `Normal.nucleoli`, `Mitoses`
+
+- A dichotymous output variable `Class`
+
+We can explore this by creating a data table stratified by `Class`. To do this we'll use the `gtsummary` packge and the function `tbl_summary()`
+
+> We don't want ID included in our table, so we'll exclude it first using `dplyr`'s `select()` function. We then build the table.
+
+```{webr}
+BreastCancer |>
+	dplyr::select(-Id) |>
+	gtsummary::tbl_summary(by = 'Class')
+
+```
+
+Most of our predictors are factors, but we'll probably want to treat these as continuous variables from now on.
+
+If we want to consider our predictors as continuous variables, we'll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use `dplyr`'s \`mutate function to do this:
+
+```{webr}
+
+BreastCancer <- BreastCancer |>
+	dplyr::select(-Id) |>
+	dplyr::mutate(across(-Class, function(x) {
+		x |> as.character() |> as.numeric()
+		})
+		) 
+```
+
+## Univariate analysis
+
+> We can now rebuild the table and add the `add_p` function at the end to run a univariate analysis on our predictors
+
+```{webr}
+BreastCancer |>
+	gtsummary::tbl_summary(by = 'Class', type = list(everything() ~ 'continuous')) |>
+	gtsummary::add_p()
+
+```
+
+These all look like really useful features for predicting cell malignancy even in a univariate analysis. This isn't always the case, and even if a predictor performs poorly in a univariate analysis, it may still perform well in a multivariate analysis.
+
+## Logistic regression model
+
+We can go ahead and build a simple logistic regression model with all these predictors:
+
+```{webr}
+library(stats)
+
+bc_model_logistic <-
+	glm(Class ~ ., data = BreastCancer, family = 'binomial')
+
+# Take a look at the model summary:
+summary(bc_model_logistic)
+
+```
+
+Another way to display the regression results is to use the `tbl_regression()` from `gtsummary`. We'll add the `exponentiate = TRUE` argument so we get odds ratios rather than log(odds) - this makes it much easier to interpret:
+
+> The extra line `gtsummary::add_glance_source_note()` adds some model performance details to the table caption. `bold_p` ... I'm sure you can work out what that does.
+
+```{webr}
+bc_model_logistic |>
+	gtsummary::tbl_regression(exponentiate = TRUE) |>
+	gtsummary::add_glance_source_note() |>
+	gtsummary::bold_p()
+```
+
+And we can `sjPlot` to quickly render a graph showing the effect sizes of each predictor:
+
+```{webr}
+library(sjPlot)
+
+bc_model_logistic |>
+	sjPlot::plot_model()
+
+```
+
+Nice! That was pretty easy, wasn't it?
+
+We can get a rough estimate of how our model performs using `performance`.
+
+```{webr}
+library(performance)
+performance_accuracy(model = bc_model_logistic)
+
 ```
