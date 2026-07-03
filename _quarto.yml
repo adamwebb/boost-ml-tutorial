@@ -8,7 +8,7 @@ title: "RadExIORSBoost ML tutorial"
 website:
   sidebar:
     title: "Tutorials"
-    style: "docked"
+    style: "floating"
     background: light
     contents:
       - boost_ml.qmd
@@ -16,3 +16,6 @@ website:
 # Change html to live-html to match your document's target format
 format:
   live-html: default
+# Don't execute R code on GitHub
+execute:
+  freeze: auto

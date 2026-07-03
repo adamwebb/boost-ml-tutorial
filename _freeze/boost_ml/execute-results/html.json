@@ -1,0 +1,17 @@
+{
+  "hash": "72ffd486c5c09acc1fd9bc1bcce7194b",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: Introduction\nengine: knitr\nformat: live-html\ntoc: false\nwebr:\n  packages:\n    - dplyr\n    - tidyverse\n    - ggplot2\n    - gtsummary\n    - mlbench\n  repos:\n    - https://r-lib.r-universe.dev\n---\n\n <!-- comment this out if you need to run quarto add r-wasm/quarto-live on th eterminal again -->\n\n::: {.cell}\n\n:::\n\n\n\n# First exercise {.sidebar}\n\nHere is the first exercise \n\n with a little callout block\n\n\n::: {.cell}\n```{webr}\nfor (x in 1:5) {\n  print(x ** 2)\n}\n```\n:::\n\n\n# Second exercise {.sidebar}\n\n## sub section {.sidebar}\n\nIs right here!\n\nLet's load the `BreastCancer` dataset\n\n\n::: {.cell}\n```{webr}\ndata(BreastCancer, package = 'mlbench')\nglimpse(BreastCancer)\n```\n:::\n\n",
+    "supporting": [
+      "boost_ml_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
