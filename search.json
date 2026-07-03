@@ -1,10 +1,40 @@
 [
   {
-    "objectID": "boost_ml.html#sub-section",
-    "href": "boost_ml.html#sub-section",
+    "objectID": "boost_ml.html",
+    "href": "boost_ml.html",
     "title": "Introduction",
-    "section": "sub section",
-    "text": "sub section\nIs right here!\nLet’s load the BreastCancer dataset",
+    "section": "",
+    "text": "In this first section we will use the sample Wisconsin Breast Cancer dataset BreastCancer. This contains a number of histological variables, plus a response varable: is the cell benign or malignant? Using this dataset we will learn how to:\nYou will need to run each code block in order or you’ll get some errors! You are welcome to chnage the code and experiment - everything here runs in your web browser. Some chunks may take some time to run.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "boost_ml.html#our-dataset",
+    "href": "boost_ml.html#our-dataset",
+    "title": "Introduction",
+    "section": "Our dataset",
+    "text": "Our dataset\nFor this tutorial we’ll be using the BreastCancer dataset from the mlbench package. Let’s load the BreastCancer dataset and take a quick look:\n\n\n\n\n\n\n\n\nIt looks like we have:\n\nOne ID column Id\n9 predictors Cl.thickness, Cell.size, Cell.shape, Marg.adhesion, Epith.c.size, Bare.nuclei, Bl.cromatin Normal.nucleoli, Mitoses\nA dichotymous output variable Class\n\nWe can explore this by creating a data table stratified by Class. To do this we’ll use the gtsummary packge and the function tbl_summary()\n\nWe don’t want ID included in our table, so we’ll exclude it first using dplyr’s select() function. We then build the table.\n\n\n\n\n\n\n\n\n\nMost of our predictors are factors, but we’ll probably want to treat these as continuous variables from now on.\nIf we want to consider our predictors as continuous variables, we’ll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use dplyr’s `mutate function to do this:",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "boost_ml.html#univariate-analysis",
+    "href": "boost_ml.html#univariate-analysis",
+    "title": "Introduction",
+    "section": "Univariate analysis",
+    "text": "Univariate analysis\n\nWe can now rebuild the table and add the add_p function at the end to run a univariate analysis on our predictors\n\n\n\n\n\n\n\n\n\nThese all look like really useful features for predicting cell malignancy even in a univariate analysis. This isn’t always the case, and even if a predictor performs poorly in a univariate analysis, it may still perform well in a multivariate analysis.",
+    "crumbs": [
+      "Introduction"
+    ]
+  },
+  {
+    "objectID": "boost_ml.html#logistic-regression-model",
+    "href": "boost_ml.html#logistic-regression-model",
+    "title": "Introduction",
+    "section": "Logistic regression model",
+    "text": "Logistic regression model\nWe can go ahead and build a simple logistic regression model with all these predictors:\n\n\n\n\n\n\n\n\nAnother way to display the regression results is to use the tbl_regression() from gtsummary. We’ll add the exponentiate = TRUE argument so we get odds ratios rather than log(odds) - this makes it much easier to interpret:\n\nThe extra line gtsummary::add_glance_source_note() adds some model performance details to the table caption. bold_p … I’m sure you can work out what that does.\n\n\n\n\n\n\n\n\n\nAnd we can sjPlot to quickly render a graph showing the effect sizes of each predictor:\n\n\n\n\n\n\n\n\nNice! That was pretty easy, wasn’t it?\nWe can get a rough estimate of how our model performs using performance.",
     "crumbs": [
       "Introduction"
     ]
