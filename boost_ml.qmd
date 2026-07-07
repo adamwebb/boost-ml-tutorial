@@ -1,5 +1,5 @@
 ---
-title: Introduction
+title: Basic logistic regression
 engine: knitr
 format: live-html
 toc: true
@@ -11,11 +11,10 @@ webr:
     - gtsummary
     - mlbench
     - broom.helpers
-    - performance
     - sjPlot
-  repos:
-    - https://r-lib.r-universe.dev
+
 ---
+
 
 <!-- comment this next line out if you need to run quarto add r-wasm/quarto-live on the terminal again -->
 
@@ -46,9 +45,40 @@ You will need to run each code block in order or you'll get some errors! You are
 For this tutorial we'll be using the `BreastCancer` dataset from the `mlbench` package. Let's load the `BreastCancer` dataset and take a quick look:
 
 ```{webr}
+#| exercise: ex_loaddata
+#| 
+data(BreastCancer, package = 'mlbench')
+glimpse(______)
+```
+
+
+:::: {.hint exercise="ex_loaddata"}
+::: {.callout-note collapse="false"}
+## Hint 1
+
+`glimpse` is a tool to preview a dataset. Use the name of the dataset inside `glimpse()`
+:::
+::::
+
+:::: {.solution exercise="ex_loaddata"}
+::: {.callout-tip collapse="false"}
+
+
+## Fully worked solution:
+
+Use the `glimpse()` function from `dplyr`:
+
+```r
 data(BreastCancer, package = 'mlbench')
 glimpse(BreastCancer)
 ```
+
+1.  Load the BreastCancer dataset from the `mlbench` package,
+2.  Use `glimpse()` to preview the data.
+:::
+::::
+
+
 
 It looks like we have:
 
@@ -60,20 +90,48 @@ It looks like we have:
 
 We can explore this by creating a data table stratified by `Class`. To do this we'll use the `gtsummary` packge and the function `tbl_summary()`
 
-> We don't want ID included in our table, so we'll exclude it first using `dplyr`'s `select()` function. We then build the table.
+> We don't want `Id` included in our table, so we'll exclude it first using `dplyr`'s `select()` function. We then build the table.
 
 ```{webr}
+#| exercise: ex_basicsummary
+#| 
 BreastCancer |>
-	dplyr::select(-Id) |>
+	dplyr::select(-______) |>
 	gtsummary::tbl_summary(by = 'Class')
 
 ```
+
+:::: {.hint exercise="ex_basicsummary"}
+::: {.callout-note collapse="false"}
+## Hint 1
+
+`dplyr::select` allows us to remove fields from our dataset by prepending a variable (e.g. `Id`) with a '-' sign
+:::
+::::
+
+:::: {.solution exercise="ex_basicsummary"}
+::: {.callout-tip collapse="false"}
+## Fully worked solution:
+
+``` r
+BreastCancer |>  #<1>
+    dplyr::select(-Id) |>. #<2>
+    gtsummary::tbl_summary(by = 'Class'). #<3>
+```
+
+Use the `select()` function from `dplyr` 1. The symbol '\|\>' is a pipe - it passed the output from one function and passes it straight into the next. In the first line it simply passed the dataset BreastCancer into the next function. 2. Removes -Id column then data frame less the Id column is passed to the table builder function `tbl_summary` from the `gtsummary` package 3. Builds our table with separate columns for each class (benign/malignant)
+:::
+::::
+
+
+### Data type conversion
 
 Most of our predictors are factors, but we'll probably want to treat these as continuous variables from now on.
 
 If we want to consider our predictors as continuous variables, we'll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use `dplyr`'s \`mutate function to do this:
 
 ```{webr}
+BreastCancer_old <- BreastCancer # make a copy before we change things
 
 BreastCancer <- BreastCancer |>
 	dplyr::select(-Id) |>
@@ -81,7 +139,11 @@ BreastCancer <- BreastCancer |>
 		x |> as.character() |> as.numeric()
 		})
 		) 
+
+glimpse(BreastCancer)
 ```
+
+This is a bit more complex than what we've done before. `mutate()` creates or changes variables. across() applys our custom function to any variables except 'Class'. Our custom function takes each column, converts it to a character, then converts that to number. We need to do it like this because R treats factors differently.
 
 ## Univariate analysis
 
@@ -96,48 +158,172 @@ BreastCancer |>
 
 These all look like really useful features for predicting cell malignancy even in a univariate analysis. This isn't always the case, and even if a predictor performs poorly in a univariate analysis, it may still perform well in a multivariate analysis.
 
+
+
+
 ## Logistic regression model
 
-We can go ahead and build a simple logistic regression model with all these predictors:
+We can go ahead and build a simple logistic regression model with all these predictors.
+
+We need to define a `formula` which takes looks something like this: 
+`response_variable ~ predictor_variables`
+
+The `predictor_variables` could be a list (e.g. `Cell.size + Cell.shape + Mitoses`), or we can use the wildcard `.` for all variables except the reponse variable.
+
+Exercise: 1. Build and run a logistic regression model. Set data to `BreastCancer` and `family` to `'binomial'` 2. Call `summary()` on our new model to get a summary of the model output
 
 ```{webr}
-library(stats)
+#| exercise: ex_basiclogistic
+#| 
 
-bc_model_logistic <-
-	glm(Class ~ ., data = BreastCancer, family = 'binomial')
+library(stats) # Loads the stats package which contains the glm function
+
+bc_model_logistic <- # where we will store our model
+	glm(Class ~ .,   # our formula
+			data = ______, 
+			family = '______')
+
+# Take a look at the model summary:
+summary(______)
+```
+
+:::: {.hint exercise="ex_basiclogistic"}
+::: {.callout-note collapse="false"}
+## Hint 1
+
+`data =` is our dataset `family` = should be binomial for logistic regression
+:::
+::::
+
+:::: {.solution exercise="ex_basiclogistic"}
+::: {.callout-tip collapse="false"}
+## Fully worked solution:
+
+```r
+# where we will store our model
+bc_model_logistic <- 
+    glm(Class ~ .,   # our formula
+            data = BreastCancer, 
+            family = 'binomial')
 
 # Take a look at the model summary:
 summary(bc_model_logistic)
-
 ```
+
+:::
+::::
 
 Another way to display the regression results is to use the `tbl_regression()` from `gtsummary`. We'll add the `exponentiate = TRUE` argument so we get odds ratios rather than log(odds) - this makes it much easier to interpret:
 
-> The extra line `gtsummary::add_glance_source_note()` adds some model performance details to the table caption. `bold_p` ... I'm sure you can work out what that does.
+The extra line `gtsummary::add_glance_source_note()` adds some model performance details to the table caption. `bold_p` ... I'm sure you can work out what that does.
+
+
+
 
 ```{webr}
+bc_model_logistic <- 
+    glm(Class ~ .,   # our formula
+            data = BreastCancer, 
+            family = 'binomial')
+
 bc_model_logistic |>
 	gtsummary::tbl_regression(exponentiate = TRUE) |>
 	gtsummary::add_glance_source_note() |>
 	gtsummary::bold_p()
 ```
 
-And we can `sjPlot` to quickly render a graph showing the effect sizes of each predictor:
+
+
+### Plotting model effects
+
+And we can use the `plot_model()` function from `sjPlot` to quickly render a graph showing the effect sizes of each predictor:
+
+```{webr}
+#| exercise: ex_basicsjPlot
+#| 
+library(sjPlot)
+
+model_effect_plot <- bc_model_logistic |>
+	sjPlot::plot_model()
+	
+______
+
+```
+
+:::: {.hint exercise="ex_basicsjPlot"}
+::: {.callout-note collapse="false"}
+## Hint 1
+
+Just call the name of your plot object to display it
+:::
+::::
+
+:::: {.solution exercise="ex_basicsjPlot"}
+::: {.callout-tip collapse="false"}
+## Fully worked solution:
+
+``` r
+library(sjPlot)
+
+model_effect_plot <- bc_model_logistic |>
+    sjPlot::plot_model()
+    
+model_effect_plot
+```
+:::
+::::
+
+Nice! That was pretty easy, wasn't it?
+
+Our `model_effect_plot` is a ggplot object, which means we can modify it, e.g.
+
+```{webr}
+# Change the theme and title
+model_effect_plot +
+	ggplot2::theme_minimal() +
+	ggplot2::ggtitle('Breast cancer predictors', subtitle = 'Logistic regression model')
+```
+
+### Visualising our model
+
+Wouldn't it be great if we could make some graphs which show predicted outcomes for different combinations of predictors?
+
+It looks like `Cl.thickness`, `Bl.cromatin` and `Bare.nuclei` are pretty good predictors. We can use sJPlot again, but this time in `'pred'` mode, which plots predictions.
+
 
 ```{webr}
 library(sjPlot)
 
-bc_model_logistic |>
-	sjPlot::plot_model()
-
+sjPlot::plot_model(bc_model_logistic, 
+			 type = 'pred',
+			 terms = c("Cl.thickness", "Bare.nuclei", "Bl.cromatin[0,5,10]"))
 ```
 
-Nice! That was pretty easy, wasn't it?
+So predictions are 0-100%. As malignancy is a binary output, we need to set a threshold to make a hard call between benign vs malignant. Where we set that will affect how sensitive and how precise our models are. This is the basis of the ROC curve and tells us how good our models are.
 
-We can get a rough estimate of how our model performs using `performance`.
 
-```{webr}
-library(performance)
-performance_accuracy(model = bc_model_logistic)
 
-```
+
+
+A few important things to note about our model:
+
+1.  Some predictors don't seem to be very good.
+
+2.  It assumes that all predictors have a linear response. If we look at the categorical data before we converted it to numbers, we can see that sometimes the responses rise, peak and then fall again. Our logistic regression model misses this.
+
+3.  Some variables correlate with each other. In a logistic regression, the effect is split across those variables and is diluted. We could be missing something important!
+
+4.  If we look at our model output we see:
+
+    `(16 observations deleted due to missingness)`
+
+If any subject has any missing data, they get dropped from the analysis completely.
+
+We will now look at how we can deal with 1, 2, 3 and 4.
+
+1.  We could simplify our model by removing ineffective predictors - there is a fine balance between gaining information from extra predictors and overfitting (model too complex). Removing predictors can effect the model, especially if there are cryptic associations with other variables. We'll look at ways to optimise models later.
+2.  We could transform the data which shows a non-linear response.
+3.  We could remove correlated variables, keeping the ones with most information
+4.  Missing data can be a) ignored, and accept that we lose some data; b) treated by removing predictors with high levels of missingness; c) interpolated (e.g. replacing missings with mean values).
+
+In the next stages we will look at feature selection, and model optimisation.

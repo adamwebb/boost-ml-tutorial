@@ -6,6 +6,7 @@ title: "RadExIORSBoost ML tutorial"
 
 # Move the sidebar inside a website wrapper
 website:
+  page-navigation: true
   sidebar:
     title: "Tutorials"
     style: "floating"
