@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://adamwebb.github.io/boost-ml-tutorial/boost_ml.html</loc>
-    <lastmod>2026-07-07T20:26:13.818Z</lastmod>
+    <lastmod>2026-07-07T22:03:42.412Z</lastmod>
+  </url>
+  <url>
+    <loc>https://adamwebb.github.io/boost-ml-tutorial/feature_selection.html</loc>
+    <lastmod>2026-07-07T22:12:11.573Z</lastmod>
   </url>
 </urlset>
