@@ -13,7 +13,9 @@ website:
     background: light
     contents:
       - boost_ml.qmd
-
+      - feature_selection.qmd
+resources:
+  - data/**
 # Change html to live-html to match your document's target format
 format:
   live-html: default

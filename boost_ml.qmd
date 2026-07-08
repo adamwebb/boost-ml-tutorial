@@ -12,9 +12,9 @@ webr:
     - mlbench
     - broom.helpers
     - sjPlot
-
+resources:
+    - "data/bcdata.Rdata"
 ---
-
 
 <!-- comment this next line out if you need to run quarto add r-wasm/quarto-live on the terminal again -->
 
@@ -51,7 +51,6 @@ data(BreastCancer, package = 'mlbench')
 glimpse(______)
 ```
 
-
 :::: {.hint exercise="ex_loaddata"}
 ::: {.callout-note collapse="false"}
 ## Hint 1
@@ -62,13 +61,11 @@ glimpse(______)
 
 :::: {.solution exercise="ex_loaddata"}
 ::: {.callout-tip collapse="false"}
-
-
 ## Fully worked solution:
 
 Use the `glimpse()` function from `dplyr`:
 
-```r
+``` r
 data(BreastCancer, package = 'mlbench')
 glimpse(BreastCancer)
 ```
@@ -77,8 +74,6 @@ glimpse(BreastCancer)
 2.  Use `glimpse()` to preview the data.
 :::
 ::::
-
-
 
 It looks like we have:
 
@@ -123,7 +118,6 @@ Use the `select()` function from `dplyr` 1. The symbol '\|\>' is a pipe - it pas
 :::
 ::::
 
-
 ### Data type conversion
 
 Most of our predictors are factors, but we'll probably want to treat these as continuous variables from now on.
@@ -158,15 +152,11 @@ BreastCancer |>
 
 These all look like really useful features for predicting cell malignancy even in a univariate analysis. This isn't always the case, and even if a predictor performs poorly in a univariate analysis, it may still perform well in a multivariate analysis.
 
-
-
-
 ## Logistic regression model
 
 We can go ahead and build a simple logistic regression model with all these predictors.
 
-We need to define a `formula` which takes looks something like this: 
-`response_variable ~ predictor_variables`
+We need to define a `formula` which takes looks something like this: `response_variable ~ predictor_variables`
 
 The `predictor_variables` could be a list (e.g. `Cell.size + Cell.shape + Mitoses`), or we can use the wildcard `.` for all variables except the reponse variable.
 
@@ -199,7 +189,7 @@ summary(______)
 ::: {.callout-tip collapse="false"}
 ## Fully worked solution:
 
-```r
+``` r
 # where we will store our model
 bc_model_logistic <- 
     glm(Class ~ .,   # our formula
@@ -209,16 +199,12 @@ bc_model_logistic <-
 # Take a look at the model summary:
 summary(bc_model_logistic)
 ```
-
 :::
 ::::
 
 Another way to display the regression results is to use the `tbl_regression()` from `gtsummary`. We'll add the `exponentiate = TRUE` argument so we get odds ratios rather than log(odds) - this makes it much easier to interpret:
 
 The extra line `gtsummary::add_glance_source_note()` adds some model performance details to the table caption. `bold_p` ... I'm sure you can work out what that does.
-
-
-
 
 ```{webr}
 bc_model_logistic <- 
@@ -231,8 +217,6 @@ bc_model_logistic |>
 	gtsummary::add_glance_source_note() |>
 	gtsummary::bold_p()
 ```
-
-
 
 ### Plotting model effects
 
@@ -290,7 +274,6 @@ Wouldn't it be great if we could make some graphs which show predicted outcomes 
 
 It looks like `Cl.thickness`, `Bl.cromatin` and `Bare.nuclei` are pretty good predictors. We can use sJPlot again, but this time in `'pred'` mode, which plots predictions.
 
-
 ```{webr}
 library(sjPlot)
 
@@ -300,10 +283,6 @@ sjPlot::plot_model(bc_model_logistic,
 ```
 
 So predictions are 0-100%. As malignancy is a binary output, we need to set a threshold to make a hard call between benign vs malignant. Where we set that will affect how sensitive and how precise our models are. This is the basis of the ROC curve and tells us how good our models are.
-
-
-
-
 
 A few important things to note about our model:
 
