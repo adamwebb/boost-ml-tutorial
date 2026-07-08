@@ -44,7 +44,7 @@
     "href": "feature_selection.html",
     "title": "Feature selection",
     "section": "",
-    "text": "In this section we will look for correlations in our data and perform automatic feature selection using a method called AIC.",
+    "text": "In this section we will look for correlations in our data and perform automatic feature selection using a method called AIC.\nLets look at our data and model again\n\n\n\n\n\n\n\n\nWe can do a visual check for correlations using lares\n\n\n\n\n\n\n\n\nThere’s a lot of correlating variables here which are redundant. Our model could benefit from optimisation!\n\n\n\n\n\n\n\n\nStepAIC tries different combinations of precitors and compares AIC. AIC is a penalty method where a more complex model is penalised over a simpler one.\nOur final model is: Class ~ Cl.thickness + Cell.shape + Marg.adhesion +      Bare.nuclei + Bl.cromatin + Normal.nucleoli + Mitoses\nAgain, we can show this in a neat table:\n\n\n\n\n\n\n\n\nAnd compare our models using the performance package:\n\n\n\n\n\n\n\n\nThe performanc epackage also includes a useful tool to check your model",
     "crumbs": [
       "Feature selection"
     ]
