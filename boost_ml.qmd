@@ -122,7 +122,7 @@ Use the `select()` function from `dplyr` 1. The symbol '\|\>' is a pipe - it pas
 
 Most of our predictors are factors, but we'll probably want to treat these as continuous variables from now on.
 
-If we want to consider our predictors as continuous variables, we'll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use `dplyr`'s \`mutate function to do this:
+If we want to consider our predictors as continuous variables, we'll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use `dplyr`'s `mutate` function to do this:
 
 ```{webr}
 BreastCancer_old <- BreastCancer # make a copy before we change things

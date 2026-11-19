@@ -15,9 +15,7 @@ webr:
     - see
   resources:
     - "data/bcdata.Rdata"
-
 ---
-
 
 <!-- comment this next line out if you need to run quarto add r-wasm/quarto-live on the terminal again -->
 
@@ -26,6 +24,7 @@ webr:
 In this section we will look for correlations in our data and perform automatic feature selection using a method called AIC.
 
 Lets look at our data and model again
+
 ```{webr}
 load('data/bcdata.Rdata')
 ls()
@@ -34,7 +33,6 @@ glimpse(BreastCancer)
 
 bc_model_logistic
 ```
-
 
 We can do a visual check for correlations using `lares`
 
@@ -51,16 +49,12 @@ library(MASS)
 MASS::stepAIC(bc_model_logistic, direction = 'both')
 ```
 
+StepAIC tries different combinations of precitors and compares AIC. AIC is a penalty method where a more complex model is penalised over a simpler one.
 
-StepAIC tries different combinations of precitors and compares AIC.
-AIC is a penalty method where a more complex model is penalised over a simpler one.
+Our final model is: `Class ~ Cl.thickness + Cell.shape + Marg.adhesion +      Bare.nuclei + Bl.cromatin + Normal.nucleoli + Mitoses`
 
-Our final model is:
-`Class ~ Cl.thickness + Cell.shape + Marg.adhesion + 
-    Bare.nuclei + Bl.cromatin + Normal.nucleoli + Mitoses`
-    
- Again, we can show this in a neat table:
- 
+Again, we can show this in a neat table:
+
 ```{webr}
 bc_model_logistic_optimised <-
 	glm(formula = Class ~ Cl.thickness + Cell.shape + Marg.adhesion + 
@@ -72,20 +66,17 @@ bc_model_logistic_optimised |>
 	gtsummary::add_glance_source_note() |>
 	gtsummary::bold_p()
 ```
- 
- 
- And compare our models using the performance package:
- 
+
+And compare our models using the performance package:
+
 ```{webr}
 performance::compare_performance(bc_model_logistic, bc_model_logistic_optimised)
 ```
- 
- The performanc epackage also includes a useful tool to check your model
- 
+
+The performance package also includes a useful tool to check your model
+
 ```{webr}
 #| fig-height: 18
 #| fig-width: 7
 performance::check_model(bc_model_logistic_optimised)
 ```
- 
- 

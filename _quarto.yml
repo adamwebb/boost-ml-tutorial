@@ -14,6 +14,7 @@ website:
     contents:
       - boost_ml.qmd
       - feature_selection.qmd
+      - tidymodels_rf.qmd
 resources:
   - data/**
 # Change html to live-html to match your document's target format
