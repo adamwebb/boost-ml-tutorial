@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.38">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -12,10 +12,13 @@
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
 */
-code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-div.columns{display: flex; gap: min(4vw, 1.5em);}
-div.column{flex: auto; overflow-x: auto;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
 ul.task-list li input[type="checkbox"] {
@@ -75,10 +78,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-94098ea06b0a2b41a4c4d84eb254f1ed.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-8d74ea1b1779f5cf893c7faad1445f8c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
 <link href="site_libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
@@ -160,6 +163,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Feature selection</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./tidymodels_rf.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tidymodels for machine learning in R</span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -227,7 +236,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </div>
 <script type="webr-1-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfbG9hZGRhdGEifSwiY29kZSI6ImRhdGEoQnJlYXN0Q2FuY2VyLCBwYWNrYWdlID0gJ21sYmVuY2gnKVxuZ2xpbXBzZShfX19fX18pIn0=
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZSwiZXhlcmNpc2UiOiJleF9sb2FkZGF0YSJ9LCJjb2RlIjoiZGF0YShCcmVhc3RDYW5jZXIsIHBhY2thZ2UgPSAnbWxiZW5jaCcpXG5nbGltcHNlKF9fX19fXykifQ==
 </script>
 </div>
 </div>
@@ -289,7 +298,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfbG9hZGRhdGEifSwi
 
 </div>
 <script type="webr-2-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfYmFzaWNzdW1tYXJ5In0sImNvZGUiOiJCcmVhc3RDYW5jZXIgfD5cbiAgICBkcGx5cjo6c2VsZWN0KC1fX19fX18pIHw+XG4gICAgZ3RzdW1tYXJ5Ojp0Ymxfc3VtbWFyeShieSA9ICdDbGFzcycpIn0=
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZSwiZXhlcmNpc2UiOiJleF9iYXNpY3N1bW1hcnkifSwiY29kZSI6IkJyZWFzdENhbmNlciB8PlxuICAgIGRwbHlyOjpzZWxlY3QoLV9fX19fXykgfD5cbiAgICBndHN1bW1hcnk6OnRibF9zdW1tYXJ5KGJ5ID0gJ0NsYXNzJykifQ==
 </script>
 </div>
 </div>
@@ -335,14 +344,14 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfYmFzaWNzdW1tYXJ5
 <section id="data-type-conversion" class="level3">
 <h3 class="anchored" data-anchor-id="data-type-conversion">Data type conversion</h3>
 <p>Most of our predictors are factors, but we’ll probably want to treat these as continuous variables from now on.</p>
-<p>If we want to consider our predictors as continuous variables, we’ll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use <code>dplyr</code>’s `mutate function to do this:</p>
+<p>If we want to consider our predictors as continuous variables, we’ll need to change their type first. To do this we need to first convert them into character strings, then convert those into numbers. We can use <code>dplyr</code>’s <code>mutate</code> function to do this:</p>
 <div class="cell">
 <div>
 <div id="webr-3" class="exercise-cell">
 
 </div>
 <script type="webr-3-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiQnJlYXN0Q2FuY2VyX29sZCA8LSBCcmVhc3RDYW5jZXIgIyBtYWtlIGEgY29weSBiZWZvcmUgd2UgY2hhbmdlIHRoaW5nc1xuXG5CcmVhc3RDYW5jZXIgPC0gQnJlYXN0Q2FuY2VyIHw+XG4gICAgZHBseXI6OnNlbGVjdCgtSWQpIHw+XG4gICAgZHBseXI6Om11dGF0ZShhY3Jvc3MoLUNsYXNzLCBmdW5jdGlvbih4KSB7XG4gICAgICAgIHggfD4gYXMuY2hhcmFjdGVyKCkgfD4gYXMubnVtZXJpYygpXG4gICAgICAgIH0pXG4gICAgICAgICkgXG5cbmdsaW1wc2UoQnJlYXN0Q2FuY2VyKSJ9
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJCcmVhc3RDYW5jZXJfb2xkIDwtIEJyZWFzdENhbmNlciAjIG1ha2UgYSBjb3B5IGJlZm9yZSB3ZSBjaGFuZ2UgdGhpbmdzXG5cbkJyZWFzdENhbmNlciA8LSBCcmVhc3RDYW5jZXIgfD5cbiAgICBkcGx5cjo6c2VsZWN0KC1JZCkgfD5cbiAgICBkcGx5cjo6bXV0YXRlKGFjcm9zcygtQ2xhc3MsIGZ1bmN0aW9uKHgpIHtcbiAgICAgICAgeCB8PiBhcy5jaGFyYWN0ZXIoKSB8PiBhcy5udW1lcmljKClcbiAgICAgICAgfSlcbiAgICAgICAgKSBcblxuZ2xpbXBzZShCcmVhc3RDYW5jZXIpIn0=
 </script>
 </div>
 </div>
@@ -360,7 +369,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiQnJlYXN0Q2FuY2VyX29sZCA8
 
 </div>
 <script type="webr-4-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiQnJlYXN0Q2FuY2VyIHw+XG4gICAgZ3RzdW1tYXJ5Ojp0Ymxfc3VtbWFyeShieSA9ICdDbGFzcycsIHR5cGUgPSBsaXN0KGV2ZXJ5dGhpbmcoKSB+ICdjb250aW51b3VzJykpIHw+XG4gICAgZ3RzdW1tYXJ5OjphZGRfcCgpIn0=
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJCcmVhc3RDYW5jZXIgfD5cbiAgICBndHN1bW1hcnk6OnRibF9zdW1tYXJ5KGJ5ID0gJ0NsYXNzJywgdHlwZSA9IGxpc3QoZXZlcnl0aGluZygpIH4gJ2NvbnRpbnVvdXMnKSkgfD5cbiAgICBndHN1bW1hcnk6OmFkZF9wKCkifQ==
 </script>
 </div>
 </div>
@@ -378,7 +387,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiQnJlYXN0Q2FuY2VyIHw+XG4g
 
 </div>
 <script type="webr-5-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfYmFzaWNsb2dpc3RpYyJ9LCJjb2RlIjoiXG5saWJyYXJ5KHN0YXRzKSAjIExvYWRzIHRoZSBzdGF0cyBwYWNrYWdlIHdoaWNoIGNvbnRhaW5zIHRoZSBnbG0gZnVuY3Rpb25cblxuYmNfbW9kZWxfbG9naXN0aWMgPC0gIyB3aGVyZSB3ZSB3aWxsIHN0b3JlIG91ciBtb2RlbFxuICAgIGdsbShDbGFzcyB+IC4sICAgI8Kgb3VyIGZvcm11bGFcbiAgICAgICAgICAgIGRhdGEgPSBfX19fX18sIFxuICAgICAgICAgICAgZmFtaWx5ID0gJ19fX19fXycpXG5cbiMgVGFrZSBhIGxvb2sgYXQgdGhlIG1vZGVsIHN1bW1hcnk6XG5zdW1tYXJ5KF9fX19fXykifQ==
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZSwiZXhlcmNpc2UiOiJleF9iYXNpY2xvZ2lzdGljIn0sImNvZGUiOiJcbmxpYnJhcnkoc3RhdHMpICMgTG9hZHMgdGhlIHN0YXRzIHBhY2thZ2Ugd2hpY2ggY29udGFpbnMgdGhlIGdsbSBmdW5jdGlvblxuXG5iY19tb2RlbF9sb2dpc3RpYyA8LSAjIHdoZXJlIHdlIHdpbGwgc3RvcmUgb3VyIG1vZGVsXG4gICAgZ2xtKENsYXNzIH4gLiwgICAjwqBvdXIgZm9ybXVsYVxuICAgICAgICAgICAgZGF0YSA9IF9fX19fXywgXG4gICAgICAgICAgICBmYW1pbHkgPSAnX19fX19fJylcblxuIyBUYWtlIGEgbG9vayBhdCB0aGUgbW9kZWwgc3VtbWFyeTpcbnN1bW1hcnkoX19fX19fKSJ9
 </script>
 </div>
 </div>
@@ -433,7 +442,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfYmFzaWNsb2dpc3Rp
 
 </div>
 <script type="webr-6-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiYmNfbW9kZWxfbG9naXN0aWMgPC0gXG4gICAgZ2xtKENsYXNzIH4gLiwgICAjwqBvdXIgZm9ybXVsYVxuICAgICAgICAgICAgZGF0YSA9IEJyZWFzdENhbmNlciwgXG4gICAgICAgICAgICBmYW1pbHkgPSAnYmlub21pYWwnKVxuXG5iY19tb2RlbF9sb2dpc3RpYyB8PlxuICAgIGd0c3VtbWFyeTo6dGJsX3JlZ3Jlc3Npb24oZXhwb25lbnRpYXRlID0gVFJVRSkgfD5cbiAgICBndHN1bW1hcnk6OmFkZF9nbGFuY2Vfc291cmNlX25vdGUoKSB8PlxuICAgIGd0c3VtbWFyeTo6Ym9sZF9wKCkifQ==
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJiY19tb2RlbF9sb2dpc3RpYyA8LSBcbiAgICBnbG0oQ2xhc3MgfiAuLCAgICPCoG91ciBmb3JtdWxhXG4gICAgICAgICAgICBkYXRhID0gQnJlYXN0Q2FuY2VyLCBcbiAgICAgICAgICAgIGZhbWlseSA9ICdiaW5vbWlhbCcpXG5cbmJjX21vZGVsX2xvZ2lzdGljIHw+XG4gICAgZ3RzdW1tYXJ5Ojp0YmxfcmVncmVzc2lvbihleHBvbmVudGlhdGUgPSBUUlVFKSB8PlxuICAgIGd0c3VtbWFyeTo6YWRkX2dsYW5jZV9zb3VyY2Vfbm90ZSgpIHw+XG4gICAgZ3RzdW1tYXJ5Ojpib2xkX3AoKSJ9
 </script>
 </div>
 </div>
@@ -446,7 +455,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiYmNfbW9kZWxfbG9naXN0aWMg
 
 </div>
 <script type="webr-7-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfYmFzaWNzalBsb3QifSwiY29kZSI6ImxpYnJhcnkoc2pQbG90KVxuXG5tb2RlbF9lZmZlY3RfcGxvdCA8LSBiY19tb2RlbF9sb2dpc3RpYyB8PlxuICAgIHNqUGxvdDo6cGxvdF9tb2RlbCgpXG4gICAgXG5fX19fX18ifQ==
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZSwiZXhlcmNpc2UiOiJleF9iYXNpY3NqUGxvdCJ9LCJjb2RlIjoibGlicmFyeShzalBsb3QpXG5cbm1vZGVsX2VmZmVjdF9wbG90IDwtIGJjX21vZGVsX2xvZ2lzdGljIHw+XG4gICAgc2pQbG90OjpwbG90X21vZGVsKClcbiAgICBcbl9fX19fXyJ9
 </script>
 </div>
 </div>
@@ -499,7 +508,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWUsImV4ZXJjaXNlIjoiZXhfYmFzaWNzalBsb3Qi
 
 </div>
 <script type="webr-8-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBDaGFuZ2UgdGhlIHRoZW1lIGFuZCB0aXRsZVxubW9kZWxfZWZmZWN0X3Bsb3QgK1xuICAgIGdncGxvdDI6OnRoZW1lX21pbmltYWwoKSArXG4gICAgZ2dwbG90Mjo6Z2d0aXRsZSgnQnJlYXN0IGNhbmNlciBwcmVkaWN0b3JzJywgc3VidGl0bGUgPSAnTG9naXN0aWMgcmVncmVzc2lvbiBtb2RlbCcpIn0=
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiIjIENoYW5nZSB0aGUgdGhlbWUgYW5kIHRpdGxlXG5tb2RlbF9lZmZlY3RfcGxvdCArXG4gICAgZ2dwbG90Mjo6dGhlbWVfbWluaW1hbCgpICtcbiAgICBnZ3Bsb3QyOjpnZ3RpdGxlKCdCcmVhc3QgY2FuY2VyIHByZWRpY3RvcnMnLCBzdWJ0aXRsZSA9ICdMb2dpc3RpYyByZWdyZXNzaW9uIG1vZGVsJykifQ==
 </script>
 </div>
 </div>
@@ -514,7 +523,7 @@ eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoiIyBDaGFuZ2UgdGhlIHRoZW1l
 
 </div>
 <script type="webr-9-contents">
-eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoibGlicmFyeShzalBsb3QpXG5cbnNqUGxvdDo6cGxvdF9tb2RlbChiY19tb2RlbF9sb2dpc3RpYywgXG4gICAgICAgICAgICAgdHlwZSA9ICdwcmVkJyxcbiAgICAgICAgICAgICB0ZXJtcyA9IGMoXCJDbC50aGlja25lc3NcIiwgXCJCYXJlLm51Y2xlaVwiLCBcIkJsLmNyb21hdGluWzAsNSwxMF1cIikpIn0=
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImVudmlyIjoiZ2xvYmFsIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJsaWJyYXJ5KHNqUGxvdClcblxuc2pQbG90OjpwbG90X21vZGVsKGJjX21vZGVsX2xvZ2lzdGljLCBcbiAgICAgICAgICAgICB0eXBlID0gJ3ByZWQnLFxuICAgICAgICAgICAgIHRlcm1zID0gYyhcIkNsLnRoaWNrbmVzc1wiLCBcIkJhcmUubnVjbGVpXCIsIFwiQmwuY3JvbWF0aW5bMCw1LDEwXVwiKSkifQ==
 </script>
 </div>
 </div>
