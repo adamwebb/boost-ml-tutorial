@@ -2,14 +2,22 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://adamwebb.github.io/boost-ml-tutorial/tidymodels_rf.html</loc>
-    <lastmod>2026-11-23T12:57:18.509Z</lastmod>
+    <lastmod>2026-11-23T13:55:12.798Z</lastmod>
+  </url>
+  <url>
+    <loc>https://adamwebb.github.io/boost-ml-tutorial/boost_ml.html</loc>
+    <lastmod>2026-11-21T12:41:22.836Z</lastmod>
+  </url>
+  <url>
+    <loc>https://adamwebb.github.io/boost-ml-tutorial/tidymodels_lasso.html</loc>
+    <lastmod>2026-11-23T14:42:24.272Z</lastmod>
   </url>
   <url>
     <loc>https://adamwebb.github.io/boost-ml-tutorial/feature_selection.html</loc>
     <lastmod>2026-11-23T08:54:34.645Z</lastmod>
   </url>
   <url>
-    <loc>https://adamwebb.github.io/boost-ml-tutorial/boost_ml.html</loc>
-    <lastmod>2026-11-21T12:41:22.836Z</lastmod>
+    <loc>https://adamwebb.github.io/boost-ml-tutorial/tidymodels_split_and_recipes.html</loc>
+    <lastmod>2026-11-23T13:37:25.761Z</lastmod>
   </url>
 </urlset>
