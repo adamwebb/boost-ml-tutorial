@@ -4,6 +4,8 @@ engine: knitr
 format: live-html
 toc: true
 webr:
+  cell-options:
+    envir: global
   packages:
     - dplyr
     - ggplot2
@@ -80,3 +82,22 @@ The performance package also includes a useful tool to check your model
 #| fig-width: 7
 performance::check_model(bc_model_logistic_optimised)
 ```
+
+## Performance comparison
+
+```{webr}
+bc_model_logistic |> performance::performance_accuracy()
+bc_model_logistic_optimised |> performance::performance_accuracy()
+
+
+```
+
+Which model performs better?
+
+We can also check the ROC curves easily:
+
+```{webr}
+bc_model_logistic |> performance::performance_roc() |> plot()
+bc_model_logistic_optimised |> performance::performance_roc() |> plot()
+```
+Both of these models are very good! In the next tutorial we will use a less predictable dataset.

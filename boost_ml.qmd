@@ -4,6 +4,8 @@ engine: knitr
 format: live-html
 toc: true
 webr:
+  cell-options:
+    envir: global
   packages:
     - dplyr
     - tidyverse

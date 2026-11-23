@@ -5,13 +5,15 @@ engine: knitr
 format: live-html
 toc: true
 webr:
+  cell-options:
+    envir: global
   packages:
     - dplyr
     - tidyverse
-    - ggplot2
+    - gtsummary
     - tidymodels
 resources:
-    - "data/bcdata.Rdata"
+    - "data/uidata.Rdata"
 editor: 
   markdown: 
     wrap: 72
@@ -51,14 +53,15 @@ library(tidymodels)
 
 ## Our dataset
 
-For this tutorial we'll be using the `BreastCancer` dataset from the
-`mlbench` package. Let's load the `BreastCancer` dataset and take a
-quick look:
+For this tutorial we'll be using a special synthetic prostate cancer
+dataset based on REQUITE. It has already been pre-loaded for you. Let's
+take a quick look at the `ui_synthetic_data` dataset:
 
 ```{webr}
 #| exercise: ex_loaddata
 #| 
-data(BreastCancer, package = 'mlbench')
+load('data/uidata.Rdata', verbose = TRUE)
+
 glimpse(______)
 ```
 
@@ -78,28 +81,29 @@ inside `glimpse()`
 Use the `glimpse()` function from `dplyr`:
 
 ``` r
-data(BreastCancer, package = 'mlbench')
-glimpse(BreastCancer)
+
+glimpse(ui_synthetic_data)
 ```
 
-1.  Load the BreastCancer dataset from the `mlbench` package,
-2.  Use `glimpse()` to preview the data.
+1.  Load the `ui_synthetic_data` dataset
+2.  Use `glimpse()` to preview the data
 :::
 ::::
 
 It looks like we have:
 
-- One ID column `Id`
+- One ID column `Subject_ID`
 
-- 9 predictors `Cl.thickness`, `Cell.size`, `Cell.shape`,
-  `Marg.adhesion`, `Epith.c.size`, `Bare.nuclei`, `Bl.cromatin`
-  `Normal.nucleoli`, `Mitoses`
+- Predictors that include patient factors, treatment details and some
+  genotypes
 
-- A dichotymous output variable `Class`
+- A dichotymous output variable
+  `urinary_incontinence_late_deterioration`
 
 We can explore this by creating a data table stratified by `Class`. To
 do this we'll use the `gtsummary` packge and the function
-`tbl_summary()`
+`tbl_summary()`. We will stratify by the endpoint
+'urinary_incontinence_late_deterioration'
 
 > We don't want `Id` included in our table, so we'll exclude it first
 > using `dplyr`'s `select()` function. We then build the table.
@@ -107,9 +111,9 @@ do this we'll use the `gtsummary` packge and the function
 ```{webr}
 #| exercise: ex_basicsummary
 #| 
-BreastCancer |>
-	dplyr::select(-______) |>
-	gtsummary::tbl_summary(by = 'Class')
+ui_synthetic_data |>
+	dplyr::select(-Subject_ID) |>
+	gtsummary::tbl_summary(by = '_____')
 
 ```
 
@@ -117,8 +121,8 @@ BreastCancer |>
 ::: {.callout-note collapse="false"}
 ## Hint 1
 
-`dplyr::select` allows us to remove fields from our dataset by
-prepending a variable (e.g. `Id`) with a '-' sign
+by refers to the variable we want to split the table by
+(urinary_incontinence_late_deterioration)
 :::
 ::::
 
@@ -127,253 +131,202 @@ prepending a variable (e.g. `Id`) with a '-' sign
 ## Fully worked solution:
 
 ``` r
-BreastCancer |>  #<1>
-    dplyr::select(-Id) |>. #<2>
-    gtsummary::tbl_summary(by = 'Class'). #<3>
+ui_synthetic_data |>
+    dplyr::select(-Subject_ID) |>
+    gtsummary::tbl_summary(by = '_____')
 ```
 
 Use the `select()` function from `dplyr` 1. The symbol '\|\>' is a
 pipe - it passed the output from one function and passes it straight
 into the next. In the first line it simply passed the dataset
-BreastCancer into the next function. 2. Removes -Id column then data
-frame less the Id column is passed to the table builder function
+BreastCancer into the next function. 2. Removes -Subject_ID column then
+data frame less the Id column is passed to the table builder function
 `tbl_summary` from the `gtsummary` package 3. Builds our table with
 separate columns for each class (benign/malignant)
 :::
 ::::
 
-### Data type conversion
+# Creating testing and training datasets
 
-Most of our predictors are factors, but we'll probably want to treat
-these as continuous variables from now on.
+In machine learning we need a training dataset and a test dataset. We
+build our models with the training data, then see how well it predicts
+outcomes in a new, unseen, test dataset.
 
-If we want to consider our predictors as continuous variables, we'll
-need to change their type first. To do this we need to first convert
-them into character strings, then convert those into numbers. We can use
-`dplyr`'s `mutate` function to do this:
+Ideally, our test dataset would be entirely new. Otherwise, we can split
+our main dataset. A 70/30 or 80/20 split would be ideal.
 
-```{webr}
-BreastCancer_old <- BreastCancer # make a copy before we change things
+Tidymodels provides the `rsample` package which assists. with this.
 
-BreastCancer <- BreastCancer |>
-	dplyr::select(-Id) |>
-	dplyr::mutate(across(-Class, function(x) {
-		x |> as.character() |> as.numeric()
-		})
-		) 
+Let's look at some options:
+https://rsample.tidymodels.org/reference/index.html
 
-glimpse(BreastCancer)
-```
+This time we will use `initial_split()`. Let's take a closer look:
+https://rsample.tidymodels.org/reference/initial_split.html
 
-This is a bit more complex than what we've done before. `mutate()`
-creates or changes variables. across() applys our custom function to any
-variables except 'Class'. Our custom function takes each column,
-converts it to a character, then converts that to number. We need to do
-it like this because R treats factors differently.
+The important options here are: `data` our initial dataset `prop` A
+proportion, e.g. 0.8 for a 80/20 split `strata` Optional. Variable to
+stratify by
 
-## Univariate analysis
-
-> We can now rebuild the table and add the `add_p` function at the end
-> to run a univariate analysis on our predictors
+Let's create a set with a 70/30 proportion and stratfied by
+`urinary_incontinence_late_deterioration`.
 
 ```{webr}
-BreastCancer |>
-	gtsummary::tbl_summary(by = 'Class', type = list(everything() ~ 'continuous')) |>
-	gtsummary::add_p()
+set.seed(123)
+
+ui_data_split <- rsample::initial_split(ui_synthetic_data, prop = _____, strata = '_____')
+
+ui_data_split
 
 ```
 
-These all look like really useful features for predicting cell
-malignancy even in a univariate analysis. This isn't always the case,
-and even if a predictor performs poorly in a univariate analysis, it may
-still perform well in a multivariate analysis.
-
-## Logistic regression model
-
-We can go ahead and build a simple logistic regression model with all
-these predictors.
-
-We need to define a `formula` which takes looks something like this:
-`response_variable ~ predictor_variables`
-
-The `predictor_variables` could be a list (e.g.
-`Cell.size + Cell.shape + Mitoses`), or we can use the wildcard `.` for
-all variables except the reponse variable.
-
-Exercise: 1. Build and run a logistic regression model. Set data to
-`BreastCancer` and `family` to `'binomial'` 2. Call `summary()` on our
-new model to get a summary of the model output
+We could look at the structure of the split object. It comtains the full
+dataset, details of how the split was performed and indexes for the
+training and test sets:
 
 ```{webr}
-#| exercise: ex_basiclogistic
-#| 
-
-library(stats) # Loads the stats package which contains the glm function
-
-bc_model_logistic <- # where we will store our model
-	glm(Class ~ .,   # our formula
-			data = ______, 
-			family = '______')
-
-# Take a look at the model summary:
-summary(______)
+str(ui_data_split)
 ```
 
-:::: {.hint exercise="ex_basiclogistic"}
-::: {.callout-note collapse="false"}
-## Hint 1
-
-`data =` is our dataset `family` = should be binomial for logistic
-regression
-:::
-::::
-
-:::: {.solution exercise="ex_basiclogistic"}
-::: {.callout-tip collapse="false"}
-## Fully worked solution:
-
-``` r
-# where we will store our model
-bc_model_logistic <- 
-    glm(Class ~ .,   # our formula
-            data = BreastCancer, 
-            family = 'binomial')
-
-# Take a look at the model summary:
-summary(bc_model_logistic)
-```
-:::
-::::
-
-Another way to display the regression results is to use the
-`tbl_regression()` from `gtsummary`. We'll add the `exponentiate = TRUE`
-argument so we get odds ratios rather than log(odds) - this makes it
-much easier to interpret:
-
-The extra line `gtsummary::add_glance_source_note()` adds some model
-performance details to the table caption. `bold_p` ... I'm sure you can
-work out what that does.
+What if we want to extract just the training or test sets? We can do
+that using `training()` or `testing()`. Try. both here:
 
 ```{webr}
-bc_model_logistic <- 
-    glm(Class ~ .,   # our formula
-            data = BreastCancer, 
-            family = 'binomial')
-
-bc_model_logistic |>
-	gtsummary::tbl_regression(exponentiate = TRUE) |>
-	gtsummary::add_glance_source_note() |>
-	gtsummary::bold_p()
+rsample::training(ui_data_split) |> as_tibble()
 ```
 
-### Plotting model effects
+Cross validation:
 
-And we can use the `plot_model()` function from `sjPlot` to quickly
-render a graph showing the effect sizes of each predictor:
+Split the data into five blocks (1-5) then:
+
+train on 1,2,3 and 5, test on 5 train on 1,2,3,5, test on 4 train on
+1,2,4,5, test on 3 train on 1,3,4,5, test on 2 train on 2,3,4,5, test on
+1
+
+If we want to do cross validation, we can use rsample again, this time
+creating cross-validation folds from the training data only:
 
 ```{webr}
-#| exercise: ex_basicsjPlot
-#| 
-library(sjPlot)
+ui_data_cv_folds <-
+	rsample::vfold_cv(
+		data = rsample::training(ui_data_split),
+		v = 5,
+		repeats = 5,
+		strata = 'urinary_incontinence_late_deterioration'
+	)
 
-model_effect_plot <- bc_model_logistic |>
-	sjPlot::plot_model()
+ui_data_cv_folds
+```
+
+- `v = number of folds`
+
+- `repeats - number of times to repeat this`
+
+- `strata - ensure equal proportions of the strata. variable in each fold`.
+
+In the example we have 5 sets of 5 folds (so 25 in total)
+
+This creates a 5-fold cross validation set, then repeats the process 5
+times. A set like this can be used when tuning more complex models such
+as LASSO regression models and random forest models. Various paramters
+are systematically tested - performance is estimated from the multiple
+cross validation sets.
+
+Ultimately this gives us 25 ROC-AUC scores - from this we can estimate
+both ROC-AUC and a confidence interval.
+
+# Recipes - processing data
+
+The `recipes` package gives us a large number of data processing steps
+to help prepare data for modelling. First we define the recipe using
+`recipe()`. To this obejct we add a number of processing steps using
+functions beginning with `step_`.
+
+Then we `prep()` the recipe. This step trains the recipe based on the
+training data.
+
+For example: a recipe containing `step_corr()` is passed to prep().
+prep() feeds the training data to the recipe. step_corr() removes
+correlating variables. The prepared recipe contains a list of variables
+to be removed.
+
+`bake()` is used to apply those intructions to a dataset. By default the
+training set is used, but that dataset can be replaced by any other
+(e.g. a test dataset) by setting the `new_data` argument. The result is
+a dataset which has been processed using the pre-trained recipe. In our
+example, correlating variables identified in training dataset are
+removed from the test dataset.
+
+A full list of step\_ functions can be found at
+<https://recipes.tidymodels.org/reference/index.html>.
+
+Let's make a simple recipe to process our dataset.
+
+```{webr}
+ui_recipe <-
+	recipes::recipe(training(ui_data_split), 
+									formula = urinary_incontinence_late_deterioration ~ .) |>
+	# set Subject_ID as a ID role so we don't try and process it later
+	recipes::update_role(Subject_ID, new_role = 'id') |>
+	# dummy-code all categorical variables
+	recipes::step_dummy(all_factor_predictors()) |>
+	# remove perdictors with near-zero variance
+	recipes::step_nzv(all_predictors()) 
 	
-______
-
+ui_recipe_trained <-
+	ui_recipe |>
+	recipes::prep()
+	
+ui_recipe_trained
 ```
 
-:::: {.hint exercise="ex_basicsjPlot"}
-::: {.callout-note collapse="false"}
-## Hint 1
-
-Just call the name of your plot object to display it
-:::
-::::
-
-:::: {.solution exercise="ex_basicsjPlot"}
-::: {.callout-tip collapse="false"}
-## Fully worked solution:
-
-``` r
-library(sjPlot)
-
-model_effect_plot <- bc_model_logistic |>
-    sjPlot::plot_model()
-    
-model_effect_plot
-```
-:::
-::::
-
-Nice! That was pretty easy, wasn't it?
-
-Our `model_effect_plot` is a ggplot object, which means we can modify
-it, e.g.
+If we want to see what happened in each step we can use `tidy()`
 
 ```{webr}
-# Change the theme and title
-model_effect_plot +
-	ggplot2::theme_minimal() +
-	ggplot2::ggtitle('Breast cancer predictors', subtitle = 'Logistic regression model')
+ui_recipe_trained |> tidy()
 ```
 
-### Visualising our model
-
-Wouldn't it be great if we could make some graphs which show predicted
-outcomes for different combinations of predictors?
-
-It looks like `Cl.thickness`, `Bl.cromatin` and `Bare.nuclei` are pretty
-good predictors. We can use sJPlot again, but this time in `'pred'`
-mode, which plots predictions.
+And to see what was removed in step 2:
 
 ```{webr}
-library(sjPlot)
-
-sjPlot::plot_model(bc_model_logistic, 
-			 type = 'pred',
-			 terms = c("Cl.thickness", "Bare.nuclei", "Bl.cromatin[0,5,10]"))
+ui_recipe_trained |> tidy(2)
 ```
 
-So predictions are 0-100%. As malignancy is a binary output, we need to
-set a threshold to make a hard call between benign vs malignant. Where
-we set that will affect how sensitive and how precise our models are.
-This is the basis of the ROC curve and tells us how good our models are.
+When we call `ui_recipe_trained` we can see that the recipes has:
 
-A few important things to note about our model:
+Identified outcome, predictor and ID variables
 
-1.  Some predictors don't seem to be very good.
+Created dummy variables for `p3radio_type`
 
-2.  It assumes that all predictors have a linear response. If we look at
-    the categorical data before we converted it to numbers, we can see
-    that sometimes the responses rise, peak and then fall again. Our
-    logistic regression model misses this.
+Removed variables with very little variance:
 
-3.  Some variables correlate with each other. In a logistic regression,
-    the effect is split across those variables and is diluted. We could
-    be missing something important!
+```         
+# A tibble: 8 × 2
+  terms                      id       
+  <chr>                      <chr>    
+1 p3brachy                   nzv_tBNwl
+2 ra                         nzv_tBNwl
+3 sildenafil                 nzv_tBNwl
+4 5alpha_reductase_inhibitor nzv_tBNwl
+5 anti_muscarinic            nzv_tBNwl
+6 amiodarone                 nzv_tBNwl
+7 hip_replacement            nzv_tBNwl
+8 SNP4                       nzv_tBNwl
 
-4.  If we look at our model output we see:
+```
 
-    `(16 observations deleted due to missingness)`
+We can output a processed training set by setting `new_data` to `NULL`
+when calling `bake()`
 
-If any subject has any missing data, they get dropped from the analysis
-completely.
+```{webr}
+ui_recipe_trained |>
+  recipes::bake(new_data = NULL) |>
+  as_tibble()
+```
 
-We will now look at how we can deal with 1, 2, 3 and 4.
+Or the test set by setting `new_data` to `test(ui_data_split)`
 
-1.  We could simplify our model by removing ineffective predictors -
-    there is a fine balance between gaining information from extra
-    predictors and overfitting (model too complex). Removing predictors
-    can effect the model, especially if there are cryptic associations
-    with other variables. We'll look at ways to optimise models later.
-2.  We could transform the data which shows a non-linear response.
-3.  We could remove correlated variables, keeping the ones with most
-    information
-4.  Missing data can be a) ignored, and accept that we lose some
-    data; b) treated by removing predictors with high levels of
-    missingness; c) interpolated (e.g. replacing missings with mean
-    values).
-
-In the next stages we will look at feature selection, and model
-optimisation.
+```{webr}
+ui_recipe_trained |>
+  recipes::bake(new_data = rsample::testing(ui_data_split)) |>
+  as_tibble()
+```

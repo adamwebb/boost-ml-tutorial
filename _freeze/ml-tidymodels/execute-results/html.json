@@ -1,0 +1,19 @@
+{
+  "hash": "5ea5c1630431341c2dca1d559f7764f2",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"ml-tidymodels\"\nformat: live-html\nengine: knitr\ntoc: true\nwebr:\n  packages:\n    - dplyr\n---\n\n\n::: {.cell}\n\n:::\n\n\n\n## Student Information\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<div class=\"learnr2-info\" data-learnr2-info=\"eyJpZCI6ImxlYXJucjItaW5mby1zdHVkZW50LWluZm8iLCJmaWVsZHMiOlt7ImtleSI6Im5h&#10;bWUiLCJsYWJlbCI6Ik5hbWU6IiwicmVxdWlyZWQiOnRydWV9LHsia2V5IjoiZW1haWwiLCJs&#10;YWJlbCI6IkVtYWlsOiIsInJlcXVpcmVkIjp0cnVlfSx7ImtleSI6ImlkIiwibGFiZWwiOiJJ&#10;RCAoaWYgcmVxdWVzdGVkIGJ5IHlvdXIgaW5zdHJ1Y3Rvcik6IiwicmVxdWlyZWQiOmZhbHNl&#10;fV0sInN1Ym1pdExhYmVsIjoiU3VibWl0IiwiZWRpdExhYmVsIjoiRWRpdCJ9\">\n<noscript>This form requires JavaScript.</noscript>\n</div>\n```\n\n:::\n:::\n\n\n## Welcome\n\nWrite your tutorial here. The chunks below run entirely in the reader's\nbrowser using WebR --- no R server required.\n\n## A runnable cell\n\n\n::: {.cell}\n```{webr}\n#| label: a-runnable-cell-1\nx <- c(1, 2, 3, 4, 5)\nmean(x)\n```\n:::\n\n\n## An exercise\n\n\n::: {.cell exercise='first_exercise' persist='true'}\n```{webr}\n#| label: an-exercise-1\n#| exercise: first_exercise\n#| persist: true\n# Compute the sum of 1 through 10.\n```\n:::\n\n\n::: { .hint exercise=\"first_exercise\" }\nThe `sum()` function adds its arguments. Try `sum(1:10)`.\n:::\n\n::: { .solution exercise=\"first_exercise\" }\n```r\nsum(1:10)\n```\n:::\n\n## A quiz question\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<div class=\"learnr2-question\" data-learnr2-question=\"eyJpZCI6ImEtcXVpei1xdWVzdGlvbi0xIiwidGV4dCI6IldoYXQgZG9lcyBgc3VtKDE6MTAp&#10;YCByZXR1cm4/IiwidHlwZSI6InNpbmdsZSIsImFuc3dlcnMiOlt7InRleHQiOiI1NSIsImNv&#10;cnJlY3QiOnRydWUsIm1lc3NhZ2UiOm51bGx9LHsidGV4dCI6IjUwIiwiY29ycmVjdCI6ZmFs&#10;c2UsIm1lc3NhZ2UiOm51bGx9LHsidGV4dCI6IjEwMCIsImNvcnJlY3QiOmZhbHNlLCJtZXNz&#10;YWdlIjpudWxsfV0sImNvcnJlY3RNZXNzYWdlIjoiQ29ycmVjdCEiLCJpbmNvcnJlY3RNZXNz&#10;YWdlIjoiSW5jb3JyZWN0LiIsImFsbG93UmV0cnkiOnRydWUsInJhbmRvbUFuc3dlck9yZGVy&#10;IjpmYWxzZSwic3VibWl0TGFiZWwiOiJTdWJtaXQgQW5zd2VyIiwidHJ5QWdhaW5MYWJlbCI6&#10;IlRyeSBBZ2FpbiIsImVkaXRMYWJlbCI6IkVkaXQgQW5zd2VyIiwiYWxsb3dJbWFnZSI6ZmFs&#10;c2UsInNob3dUZXh0Ijp0cnVlLCJ2YWxpZGF0ZSI6Im5vbmUifQ==\">\n<noscript>This quiz question requires JavaScript.</noscript>\n</div>\n```\n\n:::\n:::\n\n\n## Your Answers\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<div class=\"learnr2-question\" data-learnr2-question=\"eyJpZCI6InlvdXItYW5zd2Vycy0xIiwidGV4dCI6IkhvdyBtYW55IG1pbnV0ZXMsIGFwcHJv&#10;eGltYXRlbHksIGRpZCBpdCB0YWtlIHlvdSB0byBjb21wbGV0ZSB0aGlzXG4gIHR1dG9yaWFs&#10;PyBGb3IgZXhhbXBsZSwgYW4gaG91ciBhbmQgYSBoYWxmIHdvdWxkIGJlIDkwIG1pbnV0ZXMu&#10;IiwidHlwZSI6InJlZmxlY3Rpb25fZWRpdGFibGUiLCJhbnN3ZXJzIjpbXSwiY29ycmVjdE1l&#10;c3NhZ2UiOiJDb3JyZWN0ISIsImluY29ycmVjdE1lc3NhZ2UiOiJJbmNvcnJlY3QuIiwiYWxs&#10;b3dSZXRyeSI6ZmFsc2UsInJhbmRvbUFuc3dlck9yZGVyIjpmYWxzZSwic3VibWl0TGFiZWwi&#10;OiJTdWJtaXQgQW5zd2VyIiwidHJ5QWdhaW5MYWJlbCI6IlRyeSBBZ2FpbiIsImVkaXRMYWJl&#10;bCI6IkVkaXQgQW5zd2VyIiwiYWxsb3dJbWFnZSI6ZmFsc2UsInNob3dUZXh0Ijp0cnVlLCJ2&#10;YWxpZGF0ZSI6ImludGVnZXIifQ==\">\n<noscript>This quiz question requires JavaScript.</noscript>\n</div>\n```\n\n:::\n:::\n\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<div class=\"learnr2-download-answers\" data-learnr2-download=\"eyJmaWxlbmFtZVByZWZpeCI6Im1sLXRpZHltb2RlbHMiLCJsYWJlbCI6IkRvd25sb2FkIE15&#10;IEFuc3dlcnMifQ==\">\n<noscript>This button requires JavaScript.</noscript>\n</div>\n```\n\n:::\n:::\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<link href=\"site_libs/learnr2-quiz-0.1.3/quiz.css\" rel=\"stylesheet\" />\n<script src=\"site_libs/learnr2-quiz-0.1.3/quiz.js\"></script>\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
